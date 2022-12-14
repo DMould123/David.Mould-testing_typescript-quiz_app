@@ -2,7 +2,7 @@ import React, { ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const Home = () => {
-  const [name, setName] = useState<string>('')
+  const [name, setName] = useState('')
 
   const navigate = useNavigate()
 
@@ -10,13 +10,16 @@ export const Home = () => {
     setName(e.target.value)
 
   const continueQuiz = (): void => {
-    localStorage.setItem('name', name)
+    localStorage.setItem('name', JSON.stringify(name))
     navigate('/quiz')
   }
 
+  const quizzer = localStorage.getItem('name')
+
   return (
     <div id="home">
-      <input type="text" placeholder="Name..." onChange={addName} />
+      <p>{quizzer}</p>
+      <input type="text" placeholder="State your Name" onChange={addName} />
       <button disabled={!name} onClick={continueQuiz}>
         Continue
       </button>

@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import {
-  fetchQuestions,
-  Difficulty,
-  QuestionGrab,
-  Categories
-} from '../components/API'
+import { fetchQuestions, QuestionGrab } from '../components/API'
 import Loading from '../images/loading.gif'
 import Card from '../../src/components/Card'
-
-const TOTAL_QUESTIONS = 9
+import {
+  TOTAL_QUESTIONS,
+  difficultySelections,
+  categorySelections
+} from '../config'
+import { Difficulty } from '../Enums/Difficulty'
+import { Categories } from '../Enums/Categories'
 
 export type AnswerObject = {
   question: string
@@ -20,24 +20,25 @@ export type AnswerObject = {
 const Quiz = () => {
   const [loading, setLoading] = useState(false)
   const [questions, setQuestions] = useState<QuestionGrab[]>([])
-  const [number, setNumber] = useState(0)
+  const [number, setNumber] = useState<number>(0)
   const [gameOver, setGameOver] = useState(true)
   const [quizzerAnswers, setQuizzerAnswers] = useState<AnswerObject[]>([])
   const [total, setTotal] = useState(0)
-  const [difficulty, setDifficulty] = useState(Difficulty.EASY)
-
+  const [difficulty, setDifficulty] = useState<string>('')
+  const [category, setCategory] = useState<string>('')
+  const randomCategories = categorySelections.sort(() => Math.random() - 0.5)
   console.log(questions)
 
   const startQuiz = async () => {
     setLoading(true)
     setGameOver(false)
-
-    //need to add error handling
+    if (!difficulty) {
+      setDifficulty('easy')
+    }
 
     const newGame = await fetchQuestions(
-      TOTAL_QUESTIONS,
-      difficulty,
-      Categories.RANDOM
+      (difficulty || 'easy') as Difficulty,
+      category as Categories
     )
 
     setQuestions(newGame)
@@ -74,11 +75,6 @@ const Quiz = () => {
     }
   }
 
-  const handleDifficulty = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    //@ts-ignore
-    setDifficulty(e.target.value)
-  }
-
   return (
     <div className="Quiz">
       <h1>Quiz</h1>
@@ -107,14 +103,30 @@ const Quiz = () => {
           Next Question
         </button>
       ) : null}
-      <select value={difficulty} onChange={handleDifficulty}>
-        {Object.keys(Difficulty).map((key) => (
-          //@ts-ignore
-          <option key={key} value={Difficulty[key]}>
-            {key}
-          </option>
-        ))}
-      </select>
+      {!difficulty && (
+        <>
+          <p>Select Difficulty</p>
+          <select onChange={(e) => setDifficulty(e.target.value)}>
+            {difficultySelections.map((selections, index) => (
+              <option value={selections.name} key={index}>
+                {selections.ref}
+              </option>
+            ))}
+          </select>
+        </>
+      )}
+      {!category && (
+        <>
+          <p>Select Category</p>
+          <select onChange={(e) => setCategory(e.target.value)}>
+            {randomCategories.slice(0, 3).map((selections, index) => (
+              <option value={selections.name} key={index}>
+                {selections.id}
+              </option>
+            ))}
+          </select>
+        </>
+      )}
     </div>
   )
 }
