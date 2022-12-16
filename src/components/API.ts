@@ -1,8 +1,7 @@
-import { shuffleQuestionArray } from '../utils'
-import { Difficulty } from '../Enums/Difficulty'
+import { Difficulties } from '../Enums/Difficulties'
 import { Categories } from '../Enums/Categories'
-import Config from '../QuizConfig'
 import { Question } from '../Interfaces/Question'
+import { shuffleQuestionArray } from '../utils'
 
 const randomiseDifficulties = (difficulty: string) => {
   const difficulties = ['easy', 'medium', 'hard']
@@ -15,12 +14,13 @@ const randomiseDifficulties = (difficulty: string) => {
 export type QuestionGrab = Question & { answers: string[] }
 
 export const fetchQuestions = async (
-  difficulty: Difficulty,
-  category: Categories
+  category: Categories,
+  difficulty: Difficulties
 ): Promise<QuestionGrab[]> => {
-  const endpoint = `${Config.url}limit=${
-    Config.totalQuestions
-  }&difficulty=${randomiseDifficulties(difficulty)}`
+  const endpoint = `https://the-trivia-api.com/api/questions?categories=${category}&limit=1&difficulty=${randomiseDifficulties(
+    difficulty
+  )}
+  `
   const data = await (await fetch(endpoint)).json()
   return data.map((question: Question) => ({
     ...question,

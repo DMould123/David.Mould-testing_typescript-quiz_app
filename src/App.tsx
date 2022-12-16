@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
-import Quiz from './pages/Quiz'
+import { Quiz } from './pages/Quiz'
 
 const App = () => {
   return (

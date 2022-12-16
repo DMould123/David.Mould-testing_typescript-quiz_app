@@ -9,37 +9,37 @@ type Props = {
   totalQuestions: number
 }
 
-const Card: React.FC<Props> = ({
+export const Card = ({
   question,
   answers,
   review,
   quizzerAnswer,
   questionNumber,
   totalQuestions
-}) => (
-  <div className="Card">
-    <p>
-      Question: {questionNumber} / {totalQuestions}
-    </p>
-    <p>{question}</p>
-    <div>
-      {answers.map((answer) => (
-        <div key={answer}>
-          <button
-            style={{
-              backgroundColor:
-                quizzerAnswer?.correctAnswer === answer ? 'turqoise' : ''
-            }}
-            disabled={!!quizzerAnswer}
-            value={answer}
-            onClick={review}
-          >
-            <p>{answer}</p>
-          </button>
-        </div>
-      ))}
+}: Props) => {
+  return (
+    <div className="Card">
+      <p>
+        Question: {questionNumber} / {totalQuestions}
+      </p>
+      <p>{question}</p>
+      <div>
+        {answers.map((answer) => (
+          <div key={answer}>
+            <button
+              style={{
+                backgroundColor:
+                  quizzerAnswer?.correctAnswer === answer ? 'orange' : ''
+              }}
+              disabled={!!quizzerAnswer}
+              value={answer}
+              onClick={review}
+            >
+              <p>{answer}</p>
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-)
-
-export default Card
+  )
+}

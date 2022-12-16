@@ -1,21 +1,24 @@
 import React, { useState } from 'react'
 import { fetchQuestions, QuestionGrab } from '../components/API'
 import Loading from '../images/loading.gif'
-import Card from '../../src/components/Card'
-import { difficultySelections, categorySelections } from '../QuizConfig'
-import { Difficulty } from '../Enums/Difficulty'
+import { Card } from '../components/Card'
+import {
+  difficultySelections,
+  categorySelections,
+  TOTAL_QUESTIONS
+} from '../QuizConfig'
+import { Difficulties } from '../Enums/Difficulties'
 import { Categories } from '../Enums/Categories'
-
-const TOTAL_QUESTIONS = 9
 
 export type AnswerObject = {
   question: string
   answer: string
   correct: boolean
   correctAnswer: string
+  difficultySelection: string
 }
 
-const Quiz = () => {
+export const Quiz = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [questions, setQuestions] = useState<QuestionGrab[]>([])
   const [number, setNumber] = useState<number>(0)
@@ -30,7 +33,7 @@ const Quiz = () => {
   console.log(questions)
 
   const startQuiz = async () => {
-    setComplete(false)
+    setNumber(0)
     setLoading(true)
     setGameOver(false)
     if (!difficulty) {
@@ -38,13 +41,12 @@ const Quiz = () => {
     }
 
     const newGame = await fetchQuestions(
-      (difficulty || 'easy') as Difficulty,
-      category as Categories
+      category as Categories,
+      (difficulty || 'easy') as Difficulties
     )
     setQuestions(newGame)
     setTotal(0)
     setQuizzerAnswers([])
-    setNumber(0)
     setLoading(false)
   }
 
@@ -52,37 +54,34 @@ const Quiz = () => {
     if (!gameOver) {
       const answer = e.currentTarget.value
 
-      const correct = questions[number].correctAnswer === answer
+      const correct = questions[0].correctAnswer === answer
 
       if (correct) setTotal((prev) => prev + 1)
       setCategory('')
       const answerObject = {
-        question: questions[number].question,
+        question: questions[0].question,
         answer,
         correct,
-        difficultySelections: difficulty,
-        correctAnswer: questions[number].correctAnswer
+        difficultySelection: difficulty,
+        correctAnswer: questions[0].correctAnswer
       }
       setQuizzerAnswers((prev) => [...prev, answerObject])
     }
   }
 
-  const nextQuestion = () => {
-    const nextQuestion = number + 1
-    if (nextQuestion === TOTAL_QUESTIONS) {
+  const handleNext = async () => {
+    const newGame = await fetchQuestions(
+      category as Categories,
+      difficulty as Difficulties
+    )
+
+    setQuestions(newGame)
+
+    if (number === TOTAL_QUESTIONS) {
       setGameOver(true)
     } else {
-      setNumber(nextQuestion)
+      setComplete(true)
     }
-  }
-
-  const handleNext = () => {
-    if (number < TOTAL_QUESTIONS - 1) setNumber((prev) => prev + 1)
-    else setComplete(true)
-  }
-
-  const handleDifficulty = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setDifficulty(e.target.value)
   }
 
   return (
@@ -93,7 +92,7 @@ const Quiz = () => {
       {!difficulty && (
         <>
           <p>Select Difficulty</p>
-          <select onChange={handleDifficulty}>
+          <select onChange={(e) => setDifficulty(e.target.value)}>
             {difficultySelections.map((selections, index) => (
               <option value={selections.name} key={index}>
                 {selections.ref}
@@ -118,8 +117,8 @@ const Quiz = () => {
       {!loading && !gameOver && (
         <Card
           questionNumber={number + 1}
-          question={questions[number].question}
-          answers={questions[number].answers}
+          question={questions[0].question}
+          answers={questions[0].answers}
           totalQuestions={TOTAL_QUESTIONS}
           quizzerAnswer={quizzerAnswers ? quizzerAnswers[number] : undefined}
           review={reviewAnswer}
@@ -130,16 +129,18 @@ const Quiz = () => {
           Start!
         </button>
       ) : null}
-      {!loading &&
-      !gameOver &&
+      {!gameOver &&
+      !loading &&
       quizzerAnswers.length === number + 1 &&
       number !== TOTAL_QUESTIONS - 1 ? (
-        <button className="next" onClick={handleNext}>
+        <button
+          onClick={() => {
+            handleNext()
+          }}
+        >
           Next Question
         </button>
       ) : null}
     </div>
   )
 }
-
-export default Quiz
