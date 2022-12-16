@@ -29,7 +29,8 @@ export const Card = ({
             <button
               style={{
                 backgroundColor:
-                  quizzerAnswer?.correctAnswer === answer ? 'orange' : ''
+                  quizzerAnswer?.correctAnswer === answer ? 'orange' : '',
+                fontSize: '18px'
               }}
               disabled={!!quizzerAnswer}
               value={answer}

@@ -1,7 +1,9 @@
+import { shuffleQuestionArray } from '../utils'
 import { Difficulties } from '../Enums/Difficulties'
 import { Categories } from '../Enums/Categories'
 import { Question } from '../Interfaces/Question'
-import { shuffleQuestionArray } from '../utils'
+
+export class APIError extends Error {}
 
 const randomiseDifficulties = (difficulty: string) => {
   const difficulties = ['easy', 'medium', 'hard']
@@ -22,6 +24,7 @@ export const fetchQuestions = async (
   )}
   `
   const data = await (await fetch(endpoint)).json()
+
   return data.map((question: Question) => ({
     ...question,
     answers: shuffleQuestionArray([

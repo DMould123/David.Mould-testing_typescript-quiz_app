@@ -9,7 +9,6 @@ const Home = () => {
   const [playerName, setPlayerName] = useState('')
   const [updatedPlayerName, setUpdatedPlayerName] = useState(playerName)
 
-  // To fix Eslint issue
   console.log(updatedPlayerName)
 
   const handleClick = () => {
