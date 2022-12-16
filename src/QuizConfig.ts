@@ -48,4 +48,13 @@ export const categorySelections = [
   }
 ]
 
+export const URL = 'https://the-trivia-api.com/api/questions?'
+
 export const TOTAL_QUESTIONS: number = 9
+
+const Config = {
+  totalQuestions: TOTAL_QUESTIONS,
+  url: URL
+}
+
+export default Config

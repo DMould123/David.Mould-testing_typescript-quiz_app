@@ -2,13 +2,11 @@ import React, { useState } from 'react'
 import { fetchQuestions, QuestionGrab } from '../components/API'
 import Loading from '../images/loading.gif'
 import Card from '../../src/components/Card'
-import {
-  TOTAL_QUESTIONS,
-  difficultySelections,
-  categorySelections
-} from '../config'
+import { difficultySelections, categorySelections } from '../QuizConfig'
 import { Difficulty } from '../Enums/Difficulty'
 import { Categories } from '../Enums/Categories'
+
+const TOTAL_QUESTIONS = 9
 
 export type AnswerObject = {
   question: string
@@ -18,18 +16,21 @@ export type AnswerObject = {
 }
 
 const Quiz = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [questions, setQuestions] = useState<QuestionGrab[]>([])
   const [number, setNumber] = useState<number>(0)
-  const [gameOver, setGameOver] = useState(true)
+  const [gameOver, setGameOver] = useState<boolean>(true)
   const [quizzerAnswers, setQuizzerAnswers] = useState<AnswerObject[]>([])
-  const [total, setTotal] = useState(0)
+  const [total, setTotal] = useState<number>(0)
+  const [complete, setComplete] = useState<boolean>(false)
   const [difficulty, setDifficulty] = useState<string>('')
   const [category, setCategory] = useState<string>('')
   const randomCategories = categorySelections.sort(() => Math.random() - 0.5)
+  const player = localStorage.getItem('user')
   console.log(questions)
 
   const startQuiz = async () => {
+    setComplete(false)
     setLoading(true)
     setGameOver(false)
     if (!difficulty) {
@@ -40,7 +41,6 @@ const Quiz = () => {
       (difficulty || 'easy') as Difficulty,
       category as Categories
     )
-
     setQuestions(newGame)
     setTotal(0)
     setQuizzerAnswers([])
@@ -55,12 +55,13 @@ const Quiz = () => {
       const correct = questions[number].correctAnswer === answer
 
       if (correct) setTotal((prev) => prev + 1)
-
+      setCategory('')
       const answerObject = {
         question: questions[number].question,
-        correctAnswer: questions[number].correctAnswer,
         answer,
-        correct
+        correct,
+        difficultySelections: difficulty,
+        correctAnswer: questions[number].correctAnswer
       }
       setQuizzerAnswers((prev) => [...prev, answerObject])
     }
@@ -75,38 +76,24 @@ const Quiz = () => {
     }
   }
 
+  const handleNext = () => {
+    if (number < TOTAL_QUESTIONS - 1) setNumber((prev) => prev + 1)
+    else setComplete(true)
+  }
+
+  const handleDifficulty = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setDifficulty(e.target.value)
+  }
+
   return (
     <div className="Quiz">
-      <h1>Quiz</h1>
-      {gameOver || quizzerAnswers.length === TOTAL_QUESTIONS ? (
-        <button className="start" onClick={startQuiz}>
-          Start!
-        </button>
-      ) : null}
-      {!gameOver ? <p className="total">Total: {total}</p> : null}
-      {loading ? <img src={Loading} alt="loading" /> : null}
-      {!loading && !gameOver && (
-        <Card
-          questionNumber={number + 1}
-          question={questions[number].question}
-          answers={questions[number].answers}
-          totalQuestions={TOTAL_QUESTIONS}
-          quizzerAnswer={quizzerAnswers ? quizzerAnswers[number] : undefined}
-          review={reviewAnswer}
-        />
-      )}
-      {!loading &&
-      !gameOver &&
-      quizzerAnswers.length === number + 1 &&
-      number !== TOTAL_QUESTIONS - 1 ? (
-        <button className="next" onClick={nextQuestion}>
-          Next Question
-        </button>
-      ) : null}
+      <h1>Quiz Time</h1>
+      <h3>Player: {player}</h3>
+      {!gameOver ? <p>Score: {total}</p> : null}
       {!difficulty && (
         <>
           <p>Select Difficulty</p>
-          <select onChange={(e) => setDifficulty(e.target.value)}>
+          <select onChange={handleDifficulty}>
             {difficultySelections.map((selections, index) => (
               <option value={selections.name} key={index}>
                 {selections.ref}
@@ -120,13 +107,37 @@ const Quiz = () => {
           <p>Select Category</p>
           <select onChange={(e) => setCategory(e.target.value)}>
             {randomCategories.slice(0, 3).map((selections, index) => (
-              <option value={selections.name} key={index}>
-                {selections.id}
+              <option value={selections.id} key={index}>
+                {selections.name}
               </option>
             ))}
           </select>
         </>
       )}
+      {loading ? <img src={Loading} alt="loading" /> : null}
+      {!loading && !gameOver && (
+        <Card
+          questionNumber={number + 1}
+          question={questions[number].question}
+          answers={questions[number].answers}
+          totalQuestions={TOTAL_QUESTIONS}
+          quizzerAnswer={quizzerAnswers ? quizzerAnswers[number] : undefined}
+          review={reviewAnswer}
+        />
+      )}
+      {gameOver || quizzerAnswers.length === TOTAL_QUESTIONS ? (
+        <button className="start" onClick={startQuiz}>
+          Start!
+        </button>
+      ) : null}
+      {!loading &&
+      !gameOver &&
+      quizzerAnswers.length === number + 1 &&
+      number !== TOTAL_QUESTIONS - 1 ? (
+        <button className="next" onClick={handleNext}>
+          Next Question
+        </button>
+      ) : null}
     </div>
   )
 }

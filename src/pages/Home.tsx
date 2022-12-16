@@ -1,28 +1,34 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { useState } from 'react'
+import PlayerNameInput from '../components/PlayerNameInput'
 import { useNavigate } from 'react-router-dom'
+import context from '../Context/QuizContext'
 
-export const Home = () => {
-  const [name, setName] = useState('')
-
+const Home = () => {
   const navigate = useNavigate()
 
-  const addName = (e: ChangeEvent<HTMLInputElement>): void =>
-    setName(e.target.value)
+  const [playerName, setPlayerName] = useState('')
+  const [updatedPlayerName, setUpdatedPlayerName] = useState(playerName)
 
-  const continueQuiz = (): void => {
-    localStorage.setItem('name', JSON.stringify(name))
+  // To fix Eslint issue
+  console.log(updatedPlayerName)
+
+  const handleClick = () => {
+    // "name" stores input field value in local storage and take you to quiz page
+    localStorage.setItem('user', JSON.stringify(playerName))
+    setUpdatedPlayerName(playerName)
     navigate('/quiz')
   }
 
-  const quizzer = localStorage.getItem('name')
-
   return (
-    <div id="home">
-      <p>{quizzer}</p>
-      <input type="text" placeholder="State your Name" onChange={addName} />
-      <button disabled={!name} onClick={continueQuiz}>
-        Continue
-      </button>
-    </div>
+    <>
+      <h1>React TypeScript Quiz</h1>
+      <p>Please enter your name:</p>
+      <context.Provider value={{ playerName, setPlayerName }}>
+        <PlayerNameInput />
+        <button onClick={handleClick}>Continue</button>
+      </context.Provider>
+    </>
   )
 }
+
+export default Home

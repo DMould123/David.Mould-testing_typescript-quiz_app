@@ -1,7 +1,6 @@
-import React from 'react'
 import { AnswerObject } from '../pages/Quiz'
 
-type reviewProps = {
+type Props = {
   question: string
   answers: string[]
   review: (e: React.MouseEvent<HTMLButtonElement>) => void
@@ -10,7 +9,7 @@ type reviewProps = {
   totalQuestions: number
 }
 
-const Card: React.FC<reviewProps> = ({
+const Card: React.FC<Props> = ({
   question,
   answers,
   review,
@@ -19,15 +18,23 @@ const Card: React.FC<reviewProps> = ({
   totalQuestions
 }) => (
   <div className="Card">
-    <p className="Number">
+    <p>
       Question: {questionNumber} / {totalQuestions}
     </p>
-    <p dangerouslySetInnerHTML={{ __html: question }} />
+    <p>{question}</p>
     <div>
       {answers.map((answer) => (
         <div key={answer}>
-          <button disabled={!!quizzerAnswer} value={answer} onClick={review}>
-            <span dangerouslySetInnerHTML={{ __html: answer }} />
+          <button
+            style={{
+              backgroundColor:
+                quizzerAnswer?.correctAnswer === answer ? 'turqoise' : ''
+            }}
+            disabled={!!quizzerAnswer}
+            value={answer}
+            onClick={review}
+          >
+            <p>{answer}</p>
           </button>
         </div>
       ))}

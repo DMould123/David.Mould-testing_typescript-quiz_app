@@ -1,0 +1,3 @@
+{
+  "testMatch": ["**/*.steps.ts"]
+}
