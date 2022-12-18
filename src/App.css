@@ -16,7 +16,8 @@ button {
   border-radius: 5px;
   margin: 5px 0px;
   font-size: 30px;
-  background-color: hotpink;
+  background-color: rgb(248, 34, 34);
+  font-weight: 600;
 }
 
 .App {

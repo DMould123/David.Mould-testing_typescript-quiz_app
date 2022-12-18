@@ -52,9 +52,15 @@ export const URL = 'https://the-trivia-api.com/api/questions?'
 
 export const TOTAL_QUESTIONS: number = 9
 
+export const QUESTION_COUNTDOWN: number = 30
+
+export const DIFFICULTY_SCORING = { easy: 1, medium: 3, hard: 5 }
+
 const Config = {
   totalQuestions: TOTAL_QUESTIONS,
-  url: URL
+  url: URL,
+  questionCountdown: QUESTION_COUNTDOWN,
+  difficultyScoring: DIFFICULTY_SCORING
 }
 
 export default Config

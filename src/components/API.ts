@@ -3,8 +3,6 @@ import { Difficulties } from '../Enums/Difficulties'
 import { Categories } from '../Enums/Categories'
 import { Question } from '../Interfaces/Question'
 
-export class APIError extends Error {}
-
 const randomiseDifficulties = (difficulty: string) => {
   const difficulties = ['easy', 'medium', 'hard']
   if (difficulty === 'random') {

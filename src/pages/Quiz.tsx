@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { fetchQuestions, QuestionGrab } from '../components/API'
 import Loading from '../images/loading.gif'
 import { Card } from '../components/Card'
 import {
   TOTAL_QUESTIONS,
   difficultySelections,
-  categorySelections
+  categorySelections,
+  QUESTION_COUNTDOWN
 } from '../QuizConfig'
 import { Difficulties } from '../Enums/Difficulties'
 import { Categories } from '../Enums/Categories'
@@ -27,14 +28,49 @@ export const Quiz = () => {
   const [total, setTotal] = useState<number>(0)
   const [difficulty, setDifficulty] = useState<string>('')
   const [category, setCategory] = useState<string>('')
+  const [questionClock, setQuestionClock] = useState<boolean>(false)
+  const [pauseTime, setPauseTime] = useState<boolean>(false)
+  const [pauseCountDown, setPauseCountdown] = useState<number>(3)
+  const [questionCountdown, setQuestionCountdown] =
+    useState<number>(QUESTION_COUNTDOWN)
   const randomCategories = categorySelections.sort(() => Math.random() - 0.5)
   const player = localStorage.getItem('user')
   console.log(questions)
 
+  useEffect(() => {
+    if (questionClock) {
+      const elapsedTime: number = 0
+      if (questionCountdown > elapsedTime) {
+        setTimeout(() => {
+          setQuestionCountdown(questionCountdown - 1)
+        }, 1000)
+      }
+    }
+  }, [questionClock, questionCountdown])
+
+  useEffect(() => {
+    if (pauseTime) {
+      const elapsedTime: number = 0
+      if (pauseCountDown > elapsedTime) {
+        setTimeout(() => {
+          setPauseCountdown(pauseCountDown - 1)
+        }, 1000)
+      }
+
+      if (pauseCountDown === elapsedTime) {
+        setPauseTime(false)
+        setPauseCountdown(3)
+      }
+    }
+  }, [pauseTime, pauseCountDown])
+
   const startQuiz = async () => {
+    setPauseTime(true)
     setNumber(0)
     setLoading(true)
     setGameOver(false)
+    setQuestionClock(true)
+    setQuestionCountdown(QUESTION_COUNTDOWN + pauseCountDown)
     if (!difficulty) {
       setDifficulty('easy')
     }
@@ -55,6 +91,8 @@ export const Quiz = () => {
 
       const correct = questions[0].correctAnswer === answer
 
+      setQuestionClock(false)
+
       if (correct) {
         setTotal((prev) => prev + 1)
         setCategory('')
@@ -72,7 +110,10 @@ export const Quiz = () => {
   }
 
   const handleNext = async () => {
+    setPauseTime(true)
     setNumber((prev) => prev + 1)
+    setQuestionClock(true)
+    setQuestionCountdown(QUESTION_COUNTDOWN + pauseCountDown)
 
     const newGame = await fetchQuestions(
       category as Categories,
@@ -94,62 +135,95 @@ export const Quiz = () => {
 
   return (
     <div className="Quiz">
-      <h1>Quiz Time</h1>
+      <h1
+        style={{
+          fontSize: '70px',
+          color: 'darkturquoise',
+          textDecoration: 'underline',
+          fontStyle: 'italic',
+          margin: '20px'
+        }}
+      >
+        Quiz Time
+      </h1>
       <h3>Player: {player}</h3>
       {!gameOver ? <p>Score: {total}</p> : null}
-      {!category && (
+      {pauseTime ? (
+        <h3>{pauseCountDown} </h3>
+      ) : (
         <>
-          <p>Select Category</p>
-          <select onChange={(e) => setCategory(e.target.value)}>
-            {randomCategories.slice(0, 3).map((selections, index) => (
-              <option value={selections.id} key={index}>
-                {selections.name}
-              </option>
-            ))}
-          </select>
+          {!gameOver && <h3>Time left: {questionCountdown}</h3>}
+          {!category && (
+            <>
+              <p>Select Category</p>
+              <select
+                style={{
+                  fontSize: '20px',
+                  color: 'black',
+                  backgroundColor: 'gold'
+                }}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {randomCategories.slice(0, 3).map((selections, index) => (
+                  <option value={selections.id} key={index}>
+                    {selections.name}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+          {!difficulty && (
+            <>
+              <p>Select Difficulty</p>
+              <select
+                style={{
+                  fontSize: '20px',
+                  color: 'black',
+                  backgroundColor: 'gold'
+                }}
+                onChange={handleDifficulty}
+              >
+                {difficultySelections.map((selections, index) => (
+                  <option value={selections.name} key={index}>
+                    {selections.ref}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+          {gameOver || quizzerAnswers.length === TOTAL_QUESTIONS ? (
+            <button style={{ backgroundColor: 'hotpink' }} onClick={startQuiz}>
+              Start!
+            </button>
+          ) : null}
+          {loading ? <img src={Loading} alt="loading" /> : null}
+          {!loading && !gameOver && (
+            <Card
+              questionNumber={number + 1}
+              question={questions[0].question}
+              answers={questions[0].answers}
+              totalQuestions={TOTAL_QUESTIONS}
+              quizzerAnswer={
+                quizzerAnswers ? quizzerAnswers[number] : undefined
+              }
+              review={reviewAnswer}
+            />
+          )}
+          {!gameOver &&
+          !loading &&
+          quizzerAnswers.length === number + 1 &&
+          number !== TOTAL_QUESTIONS - 1 ? (
+            <button
+              style={{ backgroundColor: 'orange', fontSize: '18px' }}
+              onClick={() => {
+                handleNext()
+              }}
+            >
+              Next Question
+            </button>
+          ) : null}
         </>
       )}
-      {!difficulty && (
-        <>
-          <p>Select Difficulty</p>
-          <select onChange={handleDifficulty}>
-            {difficultySelections.map((selections, index) => (
-              <option value={selections.name} key={index}>
-                {selections.ref}
-              </option>
-            ))}
-          </select>
-        </>
-      )}
-      {gameOver || quizzerAnswers.length === TOTAL_QUESTIONS ? (
-        <button style={{ backgroundColor: 'hotpink' }} onClick={startQuiz}>
-          Start!
-        </button>
-      ) : null}
-      {loading ? <img src={Loading} alt="loading" /> : null}
-      {!loading && !gameOver && (
-        <Card
-          questionNumber={number + 1}
-          question={questions[0].question}
-          answers={questions[0].answers}
-          totalQuestions={TOTAL_QUESTIONS}
-          quizzerAnswer={quizzerAnswers ? quizzerAnswers[number] : undefined}
-          review={reviewAnswer}
-        />
-      )}
-      {!gameOver &&
-      !loading &&
-      quizzerAnswers.length === number + 1 &&
-      number !== TOTAL_QUESTIONS - 1 ? (
-        <button
-          style={{ backgroundColor: 'lime', fontSize: '18px' }}
-          onClick={() => {
-            handleNext()
-          }}
-        >
-          Next Question
-        </button>
-      ) : null}
     </div>
   )
 }
