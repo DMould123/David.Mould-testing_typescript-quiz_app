@@ -7,6 +7,7 @@ type Props = {
   quizzerAnswer: AnswerObject | undefined
   questionNumber: number
   totalQuestions: number
+  questionCountdown: number
 }
 
 export const Card = ({
@@ -15,7 +16,8 @@ export const Card = ({
   review,
   quizzerAnswer,
   questionNumber,
-  totalQuestions
+  totalQuestions,
+  questionCountdown
 }: Props) => {
   return (
     <div className="Card">
@@ -32,7 +34,7 @@ export const Card = ({
                   quizzerAnswer?.correctAnswer === answer ? 'green' : '',
                 fontSize: '18px'
               }}
-              disabled={!!quizzerAnswer}
+              disabled={!!quizzerAnswer || questionCountdown === 0}
               value={answer}
               onClick={review}
             >

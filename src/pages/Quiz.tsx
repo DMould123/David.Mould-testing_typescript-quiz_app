@@ -137,11 +137,10 @@ export const Quiz = () => {
     <div className="Quiz">
       <h1
         style={{
-          fontSize: '70px',
+          fontSize: '30px',
           color: 'darkturquoise',
           textDecoration: 'underline',
-          fontStyle: 'italic',
-          margin: '20px'
+          fontStyle: 'italic'
         }}
       >
         Quiz Time
@@ -155,7 +154,6 @@ export const Quiz = () => {
           {!gameOver && <h3>Time left: {questionCountdown}</h3>}
           {!category && (
             <>
-              <p>Select Category</p>
               <select
                 style={{
                   fontSize: '20px',
@@ -164,6 +162,7 @@ export const Quiz = () => {
                 }}
                 onChange={(e) => setCategory(e.target.value)}
               >
+                <option>Select Category</option>
                 {randomCategories.slice(0, 3).map((selections, index) => (
                   <option value={selections.id} key={index}>
                     {selections.name}
@@ -174,7 +173,6 @@ export const Quiz = () => {
           )}
           {!difficulty && (
             <>
-              <p>Select Difficulty</p>
               <select
                 style={{
                   fontSize: '20px',
@@ -183,6 +181,7 @@ export const Quiz = () => {
                 }}
                 onChange={handleDifficulty}
               >
+                <option>Select Difficulty</option>
                 {difficultySelections.map((selections, index) => (
                   <option value={selections.name} key={index}>
                     {selections.ref}
@@ -207,6 +206,7 @@ export const Quiz = () => {
                 quizzerAnswers ? quizzerAnswers[number] : undefined
               }
               review={reviewAnswer}
+              questionCountdown={questionCountdown}
             />
           )}
           {!gameOver &&
