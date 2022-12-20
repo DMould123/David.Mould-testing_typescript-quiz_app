@@ -35,12 +35,11 @@ export const Quiz = () => {
     useState<number>(QUESTION_COUNTDOWN)
   const randomCategories = categorySelections.sort(() => Math.random() - 0.5)
   const player = localStorage.getItem('user')
-  console.log(questions)
 
   useEffect(() => {
     if (questionClock) {
-      const elapsedTime: number = 0
-      if (questionCountdown > elapsedTime) {
+      const completedTime: number = 0
+      if (questionCountdown > completedTime) {
         setTimeout(() => {
           setQuestionCountdown(questionCountdown - 1)
         }, 1000)
@@ -50,14 +49,14 @@ export const Quiz = () => {
 
   useEffect(() => {
     if (pauseTime) {
-      const elapsedTime: number = 0
-      if (pauseCountDown > elapsedTime) {
+      const completedTime: number = 0
+      if (pauseCountDown > completedTime) {
         setTimeout(() => {
           setPauseCountdown(pauseCountDown - 1)
         }, 1000)
       }
 
-      if (pauseCountDown === elapsedTime) {
+      if (pauseCountDown === completedTime) {
         setPauseTime(false)
         setPauseCountdown(3)
       }
@@ -129,10 +128,6 @@ export const Quiz = () => {
     }
   }
 
-  const handleDifficulty = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setDifficulty(e.target.value)
-  }
-
   return (
     <div className="Quiz">
       <h1
@@ -179,7 +174,7 @@ export const Quiz = () => {
                   color: 'black',
                   backgroundColor: 'gold'
                 }}
-                onChange={handleDifficulty}
+                onChange={(e) => setDifficulty(e.target.value)}
               >
                 <option>Select Difficulty</option>
                 {difficultySelections.map((selections, index) => (
