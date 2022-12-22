@@ -1,19 +1,19 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import { Quiz } from './pages/Quiz'
 
 const App = () => {
   return (
-    <div className="App">
-      <Router>
+    <BrowserRouter>
+      <div className="App">
+        <h1>Quiz from Trivia API</h1>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/quiz" element={<Quiz />} />
         </Routes>
-      </Router>
-    </div>
+      </div>
+    </BrowserRouter>
   )
 }
 

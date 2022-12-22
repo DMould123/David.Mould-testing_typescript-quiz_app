@@ -54,7 +54,7 @@ export const TOTAL_QUESTIONS: number = 9
 
 export const QUESTION_COUNTDOWN: number = 30
 
-export const DIFFICULTY_SCORING = { easy: 1, medium: 3, hard: 5 }
+export const DIFFICULTY_SCORING = { easy: 1, medium: 3, hard: 5, fail: 0 }
 
 const Config = {
   totalQuestions: TOTAL_QUESTIONS,

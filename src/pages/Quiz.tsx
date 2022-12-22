@@ -63,6 +63,12 @@ export const Quiz = () => {
     }
   }, [pauseTime, pauseCountDown])
 
+  //   export function ScoreCalc(seconds: number, difficulty: number, guessedAnswers: number, combo: number): number {
+  //     let bonus = combo > 2 ? combo : 1;
+  //     let result = seconds * difficulty + guessedAnswers * bonus;
+  //     return result;
+  // };
+
   const startQuiz = async () => {
     setPauseTime(true)
     setNumber(0)
@@ -207,7 +213,8 @@ export const Quiz = () => {
           {!gameOver &&
           !loading &&
           quizzerAnswers.length === number + 1 &&
-          number !== TOTAL_QUESTIONS - 1 ? (
+          number !== TOTAL_QUESTIONS - 1 &&
+          category ? (
             <button
               style={{ backgroundColor: 'orange', fontSize: '18px' }}
               onClick={() => {
@@ -215,6 +222,14 @@ export const Quiz = () => {
               }}
             >
               Next Question
+            </button>
+          ) : null}
+          {!gameOver && !loading && questionCountdown === 0 ? (
+            <button
+              style={{ backgroundColor: 'orange', fontSize: '18px' }}
+              onClick={handleNext}
+            >
+              Next question
             </button>
           ) : null}
         </>

@@ -1,31 +1,46 @@
-import React, { useState } from 'react'
-import PlayerNameInput from '../components/PlayerNameInput'
-import { useNavigate } from 'react-router-dom'
-import context from '../Context/QuizContext'
+import { useState } from 'react'
 
 const Home = () => {
-  const navigate = useNavigate()
-
   const [playerName, setPlayerName] = useState('')
   const [updatedPlayerName, setUpdatedPlayerName] = useState(playerName)
 
   console.log(updatedPlayerName)
 
+  const handleChange = (e: {
+    // Handel the change in the input field
+    target: { value: React.SetStateAction<string> }
+  }) => {
+    setPlayerName(e.target.value)
+  }
+
   const handleClick = () => {
-    // "name" stores input field value in local storage and take you to quiz page
+    // "name" stores inputfield value in local storage and take you to quiz page
     localStorage.setItem('user', JSON.stringify(playerName))
     setUpdatedPlayerName(playerName)
-    navigate('/quiz')
+    window.location.href = '/quiz'
   }
 
   return (
     <>
-      <h1>React TypeScript Quiz</h1>
-      <p>Please enter your name:</p>
-      <context.Provider value={{ playerName, setPlayerName }}>
-        <PlayerNameInput />
-        <button onClick={handleClick}>Continue</button>
-      </context.Provider>
+      <div>
+        <h1>React TypeScript Quiz</h1>
+        <p>Please enter your name:</p>
+        <input
+          className="player-name"
+          type="text"
+          placeholder="Player name"
+          onChange={handleChange}
+          value={playerName}
+        />
+
+        <button
+          className="player-button"
+          onClick={handleClick}
+          disabled={!playerName}
+        >
+          Continue
+        </button>
+      </div>
     </>
   )
 }

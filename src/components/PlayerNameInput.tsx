@@ -5,7 +5,7 @@ const PlayerNameInput = () => {
   const { playerName, setPlayerName } = useContext(context)
 
   const handleChange = (e: {
-    // Handel the change in the input field
+    // updates the change in the input field
     target: { value: React.SetStateAction<string> }
   }) => {
     setPlayerName(e.target.value)
