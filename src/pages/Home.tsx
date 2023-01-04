@@ -23,7 +23,7 @@ const Home = () => {
   return (
     <>
       <div>
-        <h1>React TypeScript Quiz</h1>
+        <h1 data-testid="newtestid">React TypeScript Quiz</h1>
         <p>Please enter your name:</p>
         <input
           className="player-name"

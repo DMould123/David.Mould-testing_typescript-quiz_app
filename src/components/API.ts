@@ -16,19 +16,23 @@ export type QuestionGrab = Question & { answers: string[] }
 export const fetchQuestions = async (
   category: Categories,
   difficulty: Difficulties
-): Promise<QuestionGrab[]> => {
-  const endpoint = `https://the-trivia-api.com/api/questions?categories=${category}&limit=1&difficulty=${randomiseDifficulties(
-    difficulty
-  )}
+) => {
+  try {
+    const endpoint = `https://the-trivia-api.com/api/questions?categories=${category}&limit=1&difficulty=${randomiseDifficulties(
+      difficulty
+    )}
   `
-  const data = await (await fetch(endpoint)).json()
-  console.log(data)
-
-  return data.map((question: Question) => ({
-    ...question,
-    answers: shuffleQuestionArray([
-      ...question.incorrectAnswers,
-      question.correctAnswer
-    ])
-  }))
+    const data = await (await fetch(endpoint)).json()
+    console.log(data)
+    return data.map((question: Question) => ({
+      ...question,
+      answers: shuffleQuestionArray([
+        ...question.incorrectAnswers,
+        question.correctAnswer
+      ])
+    }))
+  } catch (error) {
+    console.log(error)
+    return error
+  }
 }

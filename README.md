@@ -1,10 +1,51 @@
-# Getting Started with Create React App
+Testing and React Typescript Quiz App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+School quiz project made with React Typescript, fetching questions from the https://the-trivia-api.com API.
+Players can select different categories and difficulties.
+Quiz instructions can be read below.
 
-## Available Scripts
+# Getting Started with the App
+
+Run git clone https://github.com/DMould123/David.Mould-testing_typescript-quiz_app.git to clone the repo.
+Run npm install to install the dependencies.
+Run npm start to open an localhost.
+Use npm test to run tests.
+
+## Quiz Instructions
+
+Enter your name.
+Select the relevant difficulty.
+Select the relevant category.
+Press start to begin.
+Answer the questions.
+You have 30 seconds to answer each question.
+After answering correctly you will be asked to select a new category.
+Click on the next question button to go to the next question.
+After answering the final question, you will see your total score including bonus points acquired.
 
 In the project directory, you can run:
+
+## Diagrams
+
+Diagrams can be found in the diagrams folder src/diagrams.
+
+UML Sequence Diagram
+
+UML Class Diagram
+
+## Tests
+
+BDD test
+
+Unit tests
+
+## Design Principles
+
+DRY
+YAGNI
+KISS
+
+## Available Scripts
 
 ### `npm start`
 

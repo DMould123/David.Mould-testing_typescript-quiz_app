@@ -1,3 +1,4 @@
+//Available difficulties to select
 export const difficultySelections = [
   { ref: 'EASY', name: 'easy' },
   { ref: 'MEDIUM', name: 'medium' },
@@ -5,6 +6,7 @@ export const difficultySelections = [
   { ref: 'RANDOM', name: 'random' }
 ]
 
+//Available categories to select
 export const categorySelections = [
   {
     id: 'arts_and_literature',
@@ -48,19 +50,36 @@ export const categorySelections = [
   }
 ]
 
+//Point scores for available difficulty
+export const DIFFICULTY_SCORING: any = {
+  easy: 1,
+  medium: 3,
+  hard: 5,
+  incorrect: 0
+}
+
 export const URL = 'https://the-trivia-api.com/api/questions?'
 
-export const TOTAL_QUESTIONS: number = 9
+export const TOTAL_QUESTIONS: number = 4
 
 export const QUESTION_COUNTDOWN: number = 30
 
-export const DIFFICULTY_SCORING = { easy: 1, medium: 3, hard: 5, fail: 0 }
+//Function to calculate the bonus score system
+export function ScoreCalc(
+  seconds: number,
+  difficultyPoints: number,
+  guessedAnswers: string | number | any,
+  combo: number
+): number {
+  let bonus = combo > 2 ? combo : 0
+  let result = seconds * difficultyPoints + guessedAnswers * bonus
+  return result
+}
 
 const Config = {
   totalQuestions: TOTAL_QUESTIONS,
   url: URL,
-  questionCountdown: QUESTION_COUNTDOWN,
-  difficultyScoring: DIFFICULTY_SCORING
+  questionCountdown: QUESTION_COUNTDOWN
 }
 
 export default Config
