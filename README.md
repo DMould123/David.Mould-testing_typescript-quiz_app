@@ -1,10 +1,10 @@
-Testing and React Typescript Quiz App
+# Testing and React Typescript Quiz App
 
 School quiz project made with React Typescript, fetching questions from the https://the-trivia-api.com API.
 Players can select different categories and difficulties.
 Quiz instructions can be read below.
 
-# Getting Started with the App
+## Getting Started with the App
 
 Run git clone https://github.com/DMould123/David.Mould-testing_typescript-quiz_app.git to clone the repo.
 Run npm install to install the dependencies.
